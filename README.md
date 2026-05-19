@@ -10,11 +10,20 @@ Accessible and multilingual share-on-Mastodon button that remembers your instanc
 
 ---
 
+## DEMO
+
+```bash
+npm install.   # Installs dev dependencies (only needed for building)
+npm run build  # Build to /dist
+npx serve .    # Run local webserver for index.html Demo-page
+```
+
 ## Installation
 
 **npm**
 
 ```bash
+# NOPE: not yet..
 npm install do-mastodon-share
 ```
 
