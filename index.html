@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mastodon Share — Demo</title>
+
+	<style>
+		*, *::before, *::after { box-sizing: border-box; }
+		html { font-family: system-ui, sans-serif; line-height: 1.5; }
+		body { max-width: 72ch; margin: 2rem auto; padding: 0 1rem; }
+		h1 { margin-bottom: .25em; }
+		h2 { margin-top: 3rem; border-bottom: 1px solid #ddd; padding-bottom: .25em; }
+		h3 { margin-top: 1.5rem; margin-bottom: .25em; }
+		p, ul { margin-top: .5rem; }
+		a { color: #6364ff; }
+		code { font-size: .875em; background: #f0f0f0; padding: .1em .35em; border-radius: .2em; }
+
+		.example { margin: 1.5rem 0; }
+		.example__demo {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 1rem;
+			padding: 1rem;
+			border: 1px solid #ddd;
+			border-radius: .375rem .375rem 0 0;
+			background: #fafafa;
+		}
+		.example__code {
+			margin: 0;
+			padding: .75rem 1rem;
+			background: #1e1e1e;
+			color: #d4d4d4;
+			border-radius: 0 0 .375rem .375rem;
+			font-size: .85em;
+			overflow-x: auto;
+			white-space: pre;
+			border: 1px solid #333;
+			border-top: none;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 1rem;
+			font-size: .9em;
+		}
+		th, td {
+			text-align: left;
+			padding: .4rem .75rem;
+			border: 1px solid #ddd;
+			vertical-align: top;
+		}
+		th { background: #f5f5f5; font-weight: 600; }
+		td code { font-size: .85em; }
+
+		/* --- Widget styles ------------------------------------------------ */
+
+		.visuallyhidden {
+			clip: rect(0 0 0 0);
+			clip-path: inset(50%);
+			height: 1px;
+			overflow: hidden;
+			position: absolute;
+			white-space: nowrap;
+			width: 1px;
+		}
+
+		.mastodon-share {
+			display: inline-flex;
+			align-items: center;
+			gap: .5em;
+			padding: .5em;
+			background: #6364ff;
+			color: #fff;
+			border-radius: .375rem;
+			text-decoration: none;
+			font-weight: 500;
+		}
+		.mastodon-share:hover { background: #4a4bcc; }
+
+		.mastodon-share__link-icon svg {
+			display: block;
+		}
+
+		.mastodon-edit {
+			padding: .25em .6em;
+			border: 1px solid #6364ff;
+			border-radius: .25rem;
+			background: transparent;
+			color: #6364ff;
+			font: inherit;
+			font-size: .85em;
+			cursor: pointer;
+		}
+		.mastodon-edit:hover { background: #6364ff; color: #fff; }
+
+		.mastodon-share-dialog {
+			border: 1px solid #ddd;
+			border-radius: .5rem;
+			padding: 1.5rem;
+			max-width: 30rem;
+			width: 100%;
+		}
+		.mastodon-share-dialog::backdrop { background: rgb(0 0 0 / .75); }
+		.mastodon-share-dialog.is-invalid input { border-color: #c0392b; outline-color: #c0392b; }
+	</style>
+</head>
+<body>
+
+	<script>
+		var mastodon_sharebutton = {
+			linktext_share_initialized: "Deel via Mastodon",
+			linktext_share_uninitialized: "Om deze pagina te delen via Mastodon, voer je eerst je server in",
+			via: "@DigitaleOverheid@social.overheid.nl"
+		};
+	</script>
+	<script type="module">
+		import initMastodonShare from './dist/mastodon-share.min.js';
+		initMastodonShare(mastodon_sharebutton);
+	</script>
+
+	<main>
+		<h1>Mastodon Share</h1>
+		<p>Toegankelijk en meertalig deel-via-Mastodon-knopje dat je Mastodon-server onthoudt.</p>
+
+		<!-- ---------------------------------------------------------------- -->
+		<section>
+			<h2>Basisgebruik</h2>
+			<p>Voeg een link toe met de classname <code>mastodon-share</code> en initialiseer het script:</p>
+			<div class="example">
+				<div class="example__demo">
+					<a class="mastodon-share" href="https://share.joinmastodon.org/">Deel via Mastodon</a>
+				</div>
+				<pre class="example__code">&lt;a class="mastodon-share" href="https://share.joinmastodon.org/"&gt;
+  Deel via Mastodon
+&lt;/a&gt;
+
+&lt;script type="module"&gt;
+  import initMastodonShare from 'mastodon-share.js';
+  initMastodonShare();
+&lt;/script&gt;</pre>
+			</div>
+			<p>Bij het eerste klikken verschijnt een dialoog om je Mastodon-server in te voeren. Na opslaan wordt de link bijgewerkt en de server onthouden in <code>localStorage</code>.</p>
+		</section>
+
+		<!-- ---------------------------------------------------------------- -->
+		<section>
+			<h2>Meerdere knoppen</h2>
+			<p>Alle elementen met de classname <code>mastodon-share</code> op de pagina worden in één keer geïnitialiseerd. Ze delen dezelfde opgeslagen server en één dialoogvenster.</p>
+			<div class="example">
+				<div class="example__demo">
+					<a class="mastodon-share" href="https://share.joinmastodon.org/">Deel via Mastodon</a>
+					<a class="mastodon-share" href="https://share.joinmastodon.org/">Deel via Mastodon</a>
+				</div>
+				<pre class="example__code">&lt;!-- Koptekst --&gt;
+&lt;a class="mastodon-share" href="https://share.joinmastodon.org/"&gt;Deel via Mastodon&lt;/a&gt;
+
+&lt;!-- Voettekst --&gt;
+&lt;a class="mastodon-share" href="https://share.joinmastodon.org/"&gt;Deel via Mastodon&lt;/a&gt;
+
+&lt;!-- Één aanroep initialiseert alle knoppen --&gt;
+&lt;script type="module"&gt;
+  import initMastodonShare from 'mastodon-share.js';
+  initMastodonShare();
+&lt;/script&gt;</pre>
+			</div>
+		</section>
+
+		<!-- ---------------------------------------------------------------- -->
+		<section>
+			<h2>Aanpassen</h2>
+			<p>Opties worden meegegeven als object, via een globale variabele vóór het laden van de module, of direct als argument:</p>
+			<pre class="example__code">&lt;!-- Via globale variabele --&gt;
+&lt;script&gt;
+  var mastodon_sharebutton = {
+    dialog_save: "Opslaan en delen",
+    via: "@mijnaccount@mastodon.social"
+  };
+&lt;/script&gt;
+&lt;script type="module"&gt;
+  import initMastodonShare from 'mastodon-share.js';
+  initMastodonShare(mastodon_sharebutton);
+&lt;/script&gt;
+
+&lt;!-- Of direct als argument --&gt;
+&lt;script type="module"&gt;
+  import initMastodonShare from 'mastodon-share.js';
+  initMastodonShare({
+    dialog_save: "Opslaan en delen",
+    via: "@mijnaccount@mastodon.social"
+  });
+&lt;/script&gt;</pre>
+
+			<h3>Opties</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>Optie</th>
+						<th>Standaard</th>
+						<th>Omschrijving</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>anchor_class</code></td>
+						<td><code>"mastodon-share"</code></td>
+						<td>CSS-classname waarmee de deellinks worden gevonden.</td>
+					</tr>
+					<tr>
+						<td><code>hidden_class</code></td>
+						<td><code>"visuallyhidden"</code></td>
+						<td>Klasse voor de visueel verborgen toegankelijkheidstekst. Vereist eigen CSS (zie <a href="#stijlen">Stijlen</a>).</td>
+					</tr>
+					<tr>
+						<td><code>storage_key</code></td>
+						<td><code>"mastodon_sharebutton_key"</code></td>
+						<td><code>localStorage</code>-sleutel voor het opslaan van de serverinstantie.</td>
+					</tr>
+					<tr>
+						<td><code>linktext_share_initialized</code></td>
+						<td><code>"Deel via Mastodon"</code></td>
+						<td>Toegankelijke linktekst wanneer er een server is opgeslagen.</td>
+					</tr>
+					<tr>
+						<td><code>linktext_share_uninitialized</code></td>
+						<td><em>(instructietekst)</em></td>
+						<td>Toegankelijke linktekst wanneer er nog geen server is ingesteld.</td>
+					</tr>
+					<tr>
+						<td><code>edit_instance</code></td>
+						<td><code>"Bewerk je Mastodon-server"</code></td>
+						<td>Label en <code>aria-label</code> voor de bewerk-knop.</td>
+					</tr>
+					<tr>
+						<td><code>dialog_label</code></td>
+						<td><code>"Wat is je Mastodon server?"</code></td>
+						<td>Koptekst van het dialoogvenster.</td>
+					</tr>
+					<tr>
+						<td><code>dialog_hint</code></td>
+						<td><em>(voorbeeldtekst)</em></td>
+						<td>Helptekst bij het invoerveld in de dialoog.</td>
+					</tr>
+					<tr>
+						<td><code>dialog_hint_invalid</code></td>
+						<td><em>(foutmelding)</em></td>
+						<td>Foutmelding bij ongeldige invoer. Gebruik <code>%SERVER%</code> als plaatshouder voor de ingevoerde waarde.</td>
+					</tr>
+					<tr>
+						<td><code>dialog_cancel</code></td>
+						<td><code>"Sluiten"</code></td>
+						<td>Label voor de sluitknop van de dialoog.</td>
+					</tr>
+					<tr>
+						<td><code>dialog_save</code></td>
+						<td><code>"Ga verder"</code></td>
+						<td>Label voor de bevestigknop van de dialoog.</td>
+					</tr>
+					<tr>
+						<td><code>via</code></td>
+						<td><code>"@DigitaleOverheid@…"</code></td>
+						<td>Optionele vermelding toegevoegd aan de gedeelde tekst. Stel in op <code>""</code> om te verwijderen.</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<!-- ---------------------------------------------------------------- -->
+		<section id="stijlen">
+			<h2>Stijlen</h2>
+			<p>Het script voegt onderstaande classnamen en elementen toe aan de DOM. Alle visuele opmaak schrijf je zelf.</p>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Selector</th>
+						<th>Onderdeel</th>
+						<th>Omschrijving</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>.mastodon-share</code></td>
+						<td>Deellink</td>
+						<td>De originele ankerlink (instelbaar via <code>anchor_class</code>).</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share__link</code></td>
+						<td>Geïnitialiseerde link</td>
+						<td>Class die na initialisatie aan de deellink wordt toegevoegd.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share__link-icon</code></td>
+						<td>Icoon</td>
+						<td>Span met het Mastodon-SVG-icoon, voor de linktekst geplaatst.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share__link__text</code></td>
+						<td>Toegankelijke tekst</td>
+						<td>Visueel verborgen span met de beschrijvende linktekst. Krijgt ook de <code>hidden_class</code> (standaard <code>.visuallyhidden</code>).</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-edit</code></td>
+						<td>Bewerk-knop</td>
+						<td>Knop die verschijnt nadat een server is opgeslagen. Staat direct na de deellink in de DOM.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-edit__text</code></td>
+						<td>Bewerk-knoptekst</td>
+						<td>Span met de zichtbare tekst van de bewerk-knop.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share-dialog</code></td>
+						<td>Dialoog</td>
+						<td>Eén gedeeld dialoogvenster, als laatste child van <code>&lt;body&gt;</code> toegevoegd.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share-dialog__hint</code></td>
+						<td>Dialooghint</td>
+						<td>Helptekst bij het invoerveld; bevat de foutmelding bij ongeldige invoer.</td>
+					</tr>
+					<tr>
+						<td><code>.mastodon-share-dialog.is-invalid</code></td>
+						<td>Dialoog (foutstate)</td>
+						<td>State-class op de dialoog bij ongeldige serverinvoer.</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3>Voorbeeld CSS</h3>
+			<pre class="example__code">/* Visueel verborgen — vereist voor toegankelijkheid */
+.visuallyhidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.mastodon-share {
+	display: inline-flex;
+	align-items: center;
+	gap: .5em;
+	padding: .5em;
+	background: #6364ff;
+	color: #fff;
+	border-radius: .375rem;
+	text-decoration: none;
+	font-weight: 500;
+}
+.mastodon-share:hover { background: #4a4bcc; }
+
+.mastodon-share__link-icon svg {
+	display: block;
+}
+
+.mastodon-edit {
+	padding: .25em .6em;
+	border: 1px solid #6364ff;
+	border-radius: .25rem;
+	background: transparent;
+	color: #6364ff;
+	font: inherit;
+	font-size: .85em;
+	cursor: pointer;
+}
+.mastodon-edit:hover { background: #6364ff; color: #fff; }
+
+.mastodon-share-dialog {
+	border: 1px solid #ddd;
+	border-radius: .5rem;
+	padding: 1.5rem;
+	max-width: 30rem;
+	width: 100%;
+}
+.mastodon-share-dialog::backdrop { background: rgb(0 0 0 / .75); }
+.mastodon-share-dialog.is-invalid input { border-color: #c0392b; outline-color: #c0392b; }
+</pre>
+		</section>
+	</main>
+
+</body>
+</html>

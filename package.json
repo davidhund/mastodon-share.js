@@ -1,0 +1,49 @@
+{
+  "name": "do-mastodon-share",
+  "version": "4.0.0",
+  "description": "Accessible and multilingual share-on-Mastodon button",
+  "type": "module",
+  "main": "./dist/mastodon-share.min.js",
+  "module": "./dist/mastodon-share.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/mastodon-share.min.js"
+    }
+  },
+  "scripts": {
+    "format": "biome format --write ./src/*.js",
+    "build:script": "esbuild src/mastodon-share.js --format=esm --target=es2020 --platform=browser --bundle --minify --sourcemap --outfile=dist/mastodon-share.min.js",
+    "build": "npm run format && npm run build:script",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidhund/mastodon-share.js.git"
+  },
+  "keywords": [
+    "mastodon"
+  ],
+  "author": "digitaleoverheid.nl",
+  "license": "EUPL-1.2",
+  "bugs": {
+    "url": "https://github.com/davidhund/mastodon-share.js/issues"
+  },
+  "homepage": "https://github.com/davidhund/mastodon-share.js#readme",
+  "files": [
+    "dist",
+    "src",
+    "docs",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "2.4.14",
+    "esbuild": "^0.25.0"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
+  ]
+}
